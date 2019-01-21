@@ -1,6 +1,7 @@
 
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
@@ -303,7 +304,8 @@ public class SunRiseSet {
 
             //return "Sunrise is: "+(int)(sunrise/15+Zone(glong))+":"+(int)(60*(sunrise/15+Zone(glong)-(int)(sunrise/15+Zone(glong))))+" .\n";
 
-            return (int) (sunrise / 15 + UTC) + ":" + (int) (60 * (sunrise / 15 + UTC - (int) (sunrise / 15 + UTC)));//
+            DecimalFormat df=new DecimalFormat("0.00");//设置保留位数
+            return (int) (sunrise / 15 + UTC) + ":" + df.format (60 * (sunrise / 15 + UTC - (int) (sunrise / 15 + UTC)));//
         }
         return null;
     }
@@ -353,7 +355,8 @@ public class SunRiseSet {
 
             //return "Sunset is: "+(int)(sunset/15+Zone(glong))+":"+(int)(60*(sunset/15+Zone(glong)-(int)(sunset/15+Zone(glong))))+" .\n";
 
-            return (int) (sunset / 15 + UTC) + ":" +  (int)(60 * (sunset / 15 + UTC - (int) (sunset / 15 + UTC)));
+            DecimalFormat df=new DecimalFormat("0.00");//设置保留位数
+            return (int) (sunset / 15 + UTC) + ":" +  df.format((60 * (sunset / 15 + UTC - (int) (sunset / 15 + UTC))));
         }
         return null;
     }
@@ -379,6 +382,6 @@ public class SunRiseSet {
         System.out.print("Year");
 
         for(int i=0;i<30;i++)
-        outcome(2019,1,21,6.7766583,50.8993757,Zone(6.7766583),angles1[i],angles2[i]);
+        outcome(2018,11,i+1,6.7766583,50.8993757,Zone(6.7766583),angles1[i],angles2[i]);
     }
 }
