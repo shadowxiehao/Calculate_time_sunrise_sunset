@@ -11,7 +11,7 @@ public class SunRiseSet {
 
     private static int[] days_of_month_2 = {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
-    private final static double h = -0.833;//日出日落时太阳的位置
+    private static double h = -0.833;//日出日落时太阳的位置(这里值可改,初始为167°太阳方位角)
 
     private final static double UTo = 180.0;//上次计算的日落日出时间，初始迭代值180.0
 
@@ -234,6 +234,11 @@ public class SunRiseSet {
 
     }
 
+//更改太阳方位角
+    public static void angle(int angles){
+        h = -1 + (angles/1000.0);
+    }
+
 //打印结果
 
 // public static void output(double rise, double set, double glong){
@@ -348,15 +353,17 @@ public class SunRiseSet {
 
             //return "Sunset is: "+(int)(sunset/15+Zone(glong))+":"+(int)(60*(sunset/15+Zone(glong)-(int)(sunset/15+Zone(glong))))+" .\n";
 
-            return (int) (sunset / 15 + UTC) + ":" + (int) (60 * (sunset / 15 + UTC - (int) (sunset / 15 + UTC)));
+            return (int) (sunset / 15 + UTC) + ":" +  (int)(60 * (sunset / 15 + UTC - (int) (sunset / 15 + UTC)));
         }
         return null;
     }
 
-    public static void outcome(int year,int month,int day, double longitude, double latitude,int UTC){
+    public static void outcome(int year,int month,int day, double longitude, double latitude,int UTC,int angle1,int angle2){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String dateTime = sdf.format(new Date(year-1900,month-1,day));
+        angle(angle1);
         String str1 = SunRiseSet.getSunrise(new BigDecimal(longitude),new BigDecimal(latitude),dateTime,UTC);
+        angle(angle2);
         String str2 = SunRiseSet.getSunset(new BigDecimal(longitude),new BigDecimal(latitude),dateTime,UTC);
 
         System.out.println("dateTime：" + dateTime);
@@ -365,10 +372,13 @@ public class SunRiseSet {
     }
 
     public static void main(String[] args) {
-        int year,month,day;
+        int year,month,day,angle1,angle2;
+        int[] angles1 = {112,113,113,114,114,115,115,116,116,117,117,118,118,119,119,120,120,120,121,121,122,122,122,123,123,124,124,124,124,125};
+        int[] angles2 = {248,247,246,246,245,245,244,244,243,243,242,242,242,241,241,240,240,239,239,239,238,238,237,237,237,236,236,236,235,235};
         Scanner sc = new Scanner(System.in);
         System.out.print("Year");
 
-        outcome(2019,1,21,6.7766583,50.8993757,Zone(6.7766583));
+        for(int i=0;i<30;i++)
+        outcome(2019,1,21,6.7766583,50.8993757,Zone(6.7766583),angles1[i],angles2[i]);
     }
 }
