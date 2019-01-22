@@ -21,6 +21,7 @@ import org.jfree.ui.RefineryUtilities;
  */
 public class Chart extends ApplicationFrame {
 
+
     private static final long serialVersionUID = 1L;
 
     static {
@@ -35,14 +36,16 @@ public class Chart extends ApplicationFrame {
      *
      * @param title  the frame title.
      */
-    public Chart(String title) {
+    public Chart(String title,CategoryDataset dataset) {
         super(title);
-        CategoryDataset dataset = createDataset();
+
+        ChartUtils.setChartTheme();//设置了字体类
         JFreeChart chart = createChart(dataset);
         ChartPanel chartPanel = new ChartPanel(chart);
         chartPanel.setFillZoomRectangle(true);
         chartPanel.setMouseWheelEnabled(true);
-        chartPanel.setPreferredSize(new Dimension(500, 270));
+        chartPanel.setPreferredSize(new Dimension(800, 600));
+        ChartUtils.setAntiAlias(chart);//关闭抗锯齿
         setContentPane(chartPanel);
     }
 
@@ -52,6 +55,7 @@ public class Chart extends ApplicationFrame {
      * @return The dataset.
      */
     private static CategoryDataset createDataset() {
+
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         dataset.addValue(7445, "JFreeSVG", "Warm-up");
         dataset.addValue(24448, "Batik", "Warm-up");
@@ -69,23 +73,13 @@ public class Chart extends ApplicationFrame {
      */
     private static JFreeChart createChart(CategoryDataset dataset) {
         JFreeChart chart = ChartFactory.createLineChart(
-                "Performance: JFreeSVG vs Batik", null /* x-axis label*/,
-                "Milliseconds" /* y-axis label */, dataset);
-        chart.addSubtitle(new TextTitle("Time to generate 1000 charts in SVG "
-                + "format (lower bars = better performance)"));
+                "时间对比", null /* x-axis label*/,
+                "日出时间" /* y-axis label */, dataset);
+        chart.addSubtitle(new TextTitle("最接近的就是最吻合的"));
         chart.setBackgroundPaint(Color.white);
         CategoryPlot plot = (CategoryPlot) chart.getPlot();
 
-        // ******************************************************************
-        //  More than 150 demo applications are included with the JFreeChart
-        //  Developer Guide...for more information, see:
-        //
-        //  >   http://www.object-refinery.com/jfreechart/guide.html
-        //
-        // ******************************************************************
-        Font font = new Font("宋体", Font.BOLD, 12);
         NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-        plot.setNoDataMessageFont(font);
         rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
         LineAndShapeRenderer renderer = (LineAndShapeRenderer) plot.getRenderer();
         chart.getLegend().setFrame(BlockBorder.NONE);
@@ -95,13 +89,14 @@ public class Chart extends ApplicationFrame {
     /**
      * Starting point for the demonstration application.
      *
-     * @param args  ignored.
+     * @param
      */
-    public static void main(String[] args) {
-        Chart demo = new Chart("JFreeChart: Chart.java");
-        demo.pack();
-        RefineryUtilities.centerFrameOnScreen(demo);
-        demo.setVisible(true);
+    public static void makevisible(CategoryDataset dataset) {
+
+        Chart match = new Chart("find match",dataset);
+        match.pack();
+        RefineryUtilities.centerFrameOnScreen(match);
+        match.setVisible(true);
     }
 
 }

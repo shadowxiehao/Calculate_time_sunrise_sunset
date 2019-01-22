@@ -260,7 +260,8 @@ public class SunRiseSet {
 
 // }
 
-    public static String getSunrise(BigDecimal longitude, BigDecimal latitude, String dateTime,int UTC) {//将返回的日出时间转化为字符串形式友好化输出
+    public static float[] getSunrise(BigDecimal longitude, BigDecimal latitude, String dateTime,int UTC) {//将返回的日出时间转化为字符串形式友好化输出
+        float[] out = new float[2];
         if (dateTime != null && longitude != null && latitude != null) {
             double sunrise, glong, glat;
             int year, month, date;
@@ -304,14 +305,16 @@ public class SunRiseSet {
 
             //return "Sunrise is: "+(int)(sunrise/15+Zone(glong))+":"+(int)(60*(sunrise/15+Zone(glong)-(int)(sunrise/15+Zone(glong))))+" .\n";
 
-            DecimalFormat df=new DecimalFormat("0.00");//设置保留位数
-            return (int) (sunrise / 15 + UTC) + ":" + df.format (60 * (sunrise / 15 + UTC - (int) (sunrise / 15 + UTC)));//
+            out[0]=(int) (sunrise / 15 + UTC);
+            out[1]=(float)Math.round(60 * (sunrise / 15 + UTC - (int) (sunrise / 15 + UTC))*10)/10;
+            return out;
         }
         return null;
     }
 
 
-    public static String getSunset(BigDecimal longitude, BigDecimal latitude, String dateTime,int UTC) {//将返回的日落时间转化为字符串形式友好化输出
+    public static float[] getSunset(BigDecimal longitude, BigDecimal latitude, String dateTime,int UTC) {//将返回的日落时间转化为字符串形式友好化输出
+        float[] out = new float[2];
         if (dateTime != null && latitude != null && longitude != null) {
             double sunset, glong, glat;
             int year, month, date;
@@ -355,23 +358,26 @@ public class SunRiseSet {
 
             //return "Sunset is: "+(int)(sunset/15+Zone(glong))+":"+(int)(60*(sunset/15+Zone(glong)-(int)(sunset/15+Zone(glong))))+" .\n";
 
-            DecimalFormat df=new DecimalFormat("0.00");//设置保留位数
-            return (int) (sunset / 15 + UTC) + ":" +  df.format((60 * (sunset / 15 + UTC - (int) (sunset / 15 + UTC))));
+            out[0]=(int) (sunset / 15 + UTC);//记录小时
+            out[1]=Math.round((60 * (sunset / 15 + UTC - (int) (sunset / 15 + UTC)))*10)/10;
+            return out;
         }
         return null;
     }
 
     public static void outcome(int year,int month,int day, double longitude, double latitude,int UTC,int angle1,int angle2){
+        float[] out1;
+        float[] out2;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         String dateTime = sdf.format(new Date(year-1900,month-1,day));
         angle(angle1);
-        String str1 = SunRiseSet.getSunrise(new BigDecimal(longitude),new BigDecimal(latitude),dateTime,UTC);
+        out1 = SunRiseSet.getSunrise(new BigDecimal(longitude),new BigDecimal(latitude),dateTime,UTC);
         angle(angle2);
-        String str2 = SunRiseSet.getSunset(new BigDecimal(longitude),new BigDecimal(latitude),dateTime,UTC);
+        out2= SunRiseSet.getSunset(new BigDecimal(longitude),new BigDecimal(latitude),dateTime,UTC);
 
         System.out.println("dateTime：" + dateTime);
-        System.out.println("日出时间：" + str1);
-        System.out.println("日落时间：" + str2);
+        System.out.println("日出时间：" + (int)out1[0]+":"+out1[1]);
+        System.out.println("日落时间：" + (int)out2[0]+":"+out2[1]);
     }
 
     public static void main(String[] args) {
