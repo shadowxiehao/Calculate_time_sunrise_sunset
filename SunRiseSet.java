@@ -423,7 +423,7 @@ public class SunRiseSet {
                         outdata_temp[day]=out;
                     }
                     if(out_put_temp<out_put){
-                        output = "经度:"+(angles1[j])+" 纬度:"+angles2[j]+" "+year+"年"+month+"月";
+                        output = "经度:"+(longitudes[j])+" 纬度:"+latitudes[j]+" "+year+"年"+month+"月";
                         out_put = out_put_temp;//存储偏差
                         outdata = outdata_temp;//存储最小数据
                     }
