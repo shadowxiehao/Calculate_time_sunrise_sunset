@@ -393,8 +393,10 @@ public class SunRiseSet {
         double longitude,latitude;
         double[] longitudes ={9.73322,8.80777,13.06566,6.77616,11.03283,11.57549,9.17702,13.41053,11.41316,10.01534,10.13489,8.2791,13.73832,11.62916,6.98165,8.24932};
         double[] latitudes = {52.37052,53.07516,52.39886,51.22172,50.9787,48.13743,48.78232,52.52437,53.62937,53.57532,54.32133,49.98419,51.05089,52.12773,49.2354,50.08258};
+
         int[] angles1 = {112,113,113,114,114,115,115,116,116,117,117,118,118,119,119,120,120,120,121,121,122,122,122,123,123,124,124,124,124,125};//太阳日出时角度
         int[] angles2 = {248,247,246,246,245,245,244,244,243,243,242,242,242,241,241,240,240,239,239,239,238,238,237,237,237,236,236,236,235,235};//太阳日落时角度
+
         //原始数据
         int[] origin1_hour = {7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7,8,8,8,8,8,8,8,8,8};//日出小时数
         int[] origin1_min = {25, 27, 28, 30, 32, 34, 35, 37, 39, 40, 42, 44, 46, 47, 49, 51, 52, 54, 56, 57, 59, 1, 2, 4, 5, 7, 8, 10, 11, 13};//日落小时数
@@ -403,7 +405,7 @@ public class SunRiseSet {
 
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
-        int[] months = {11,1};
+        int[] months = {9,11};
         out_put = 10000;
         String output="";
         double[][] outdata_temp = new double[30][9];
@@ -413,6 +415,7 @@ public class SunRiseSet {
 
             for (int j = 0; j < longitudes.length; j++) {
                 for (int month:months) {
+
                     out_put_temp = 0;
                     for (int day = 0; day < 30; day++) {//以30天为一组看误差
 
@@ -423,17 +426,17 @@ public class SunRiseSet {
                         outdata_temp[day]=out;
                     }
                     if(out_put_temp<out_put){
-                        output = "经度:"+(longitudes[j])+" 纬度:"+latitudes[j]+" "+year+"年"+month+"月";
+                        output = "经度:"+(longitudes[j])+" 纬度:"+latitudes[j]+" "+year+"年"+month+"月 第"+(j+1)+"组";
                         out_put = out_put_temp;//存储偏差
-                        outdata = outdata_temp;//存储最小数据
+                        outdata = outdata_temp.clone();//存储最小数据
                     }
 
                 }
             }
         }
-        System.out.println(output+":"+out_put);
+        System.out.println(output+" 误差:"+out_put);
         for(int i=0;i<30;i++){
-            System.out.println("第"+(i+1)+"天:"+(int)outdata[i][5]+":"+Math.round(outdata[i][6]*10)/10);
+            System.out.println("第"+(i+1)+"天:"+(int)outdata[i][5]+":"+Math.round(outdata[i][6]*10)/10+" "+(int)outdata[i][7]+":"+Math.round(outdata[i][8]*10)/10);
         }
     }
 }
