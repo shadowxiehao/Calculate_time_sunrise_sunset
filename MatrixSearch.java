@@ -1,5 +1,4 @@
 
-
 import java.util.Scanner;
 import java.text.DecimalFormat;
 import org.jfree.data.category.CategoryDataset;
@@ -9,7 +8,8 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class SunRiseSet {
+
+public class MatrixSearch {
 
     private static int[] days_of_month_1 = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
@@ -238,7 +238,7 @@ public class SunRiseSet {
 
     }
 
-//更改太阳方位角
+    //更改太阳方位角
     public static void angle(int angles){
         h = -1 + (angles/1000.0);
     }
@@ -351,9 +351,9 @@ public class SunRiseSet {
                             e(
                                     h, glat, sun_deviation(earth_tilt(t_century(days(year, month, date), UTo)),
 
-                                    ecliptic_longitude(L_sun(t_century(days(year, month, date), UTo)),
+                                            ecliptic_longitude(L_sun(t_century(days(year, month, date), UTo)),
 
-                                            G_sun(t_century(days(year, month, date), UTo)))))), UTo, glong, glat, year, month, date);
+                                                    G_sun(t_century(days(year, month, date), UTo)))))), UTo, glong, glat, year, month, date);
 
 //System.out.println("The time at which the sunset is: "+(int)(sunset/15+Zone(glong))+":"+(int)(60*(sunset/15+Zone(glong)-(int)(sunset/15+Zone(glong))))+" .\n");
 
@@ -391,8 +391,18 @@ public class SunRiseSet {
         double out_put,out_put_temp;
         int year;
 
-        double[] longitudes ={9.73322,8.80777,13.06566,6.77616,11.03283,11.57549,9.17702,13.41053,11.41316,10.01534,10.13489,8.2791,13.73832,11.62916,6.98165,8.24932};
-        double[] latitudes = {52.37052,53.07516,52.39886,51.22172,50.9787,48.13743,48.78232,52.52437,53.62937,53.57532,54.32133,49.98419,51.05089,52.12773,49.2354,50.08258};
+        double[] longitudes =new double[21];
+        double[] latitudes = new double[21];
+        //设置经纬度搜索矩阵
+        int count=0;
+        for(double longitude=5.77;longitude<=7.77;longitude+=0.1){
+            longitudes[count++]=longitude;
+        }
+        count=0;
+        for(double latitude=50.22;latitude<=52.22;latitude+=0.1){
+            latitudes[count++]=latitude;
+        }
+
 
         int[] angles1 = {112,113,113,114,114,115,115,116,116,117,117,118,118,119,119,120,120,120,121,121,122,122,122,123,123,124,124,124,124,125};//太阳日出时角度
         int[] angles2 = {248,247,246,246,245,245,244,244,243,243,242,242,242,241,241,240,240,239,239,239,238,238,237,237,237,236,236,236,235,235};//太阳日落时角度
@@ -409,27 +419,29 @@ public class SunRiseSet {
         String output="";
         double[][] outdata_temp = new double[30][9];
         double[][] outdata = new double[30][9];
-        outdata[0][0]=0;
+
         for(year=2000;year<=2018;year++) {//录入其它生成数据
 
-            for (int j = 0; j < longitudes.length; j++) {
-                for (int month:months) {
+            for (int lo = 0; lo < longitudes.length; lo++) {
+                for (int la = 0; la < latitudes.length; la++) {
+                    for (int month : months) {
 
-                    out_put_temp = 0;
-                    for (int day = 0; day < 30; day++) {//以30天为一组看误差
+                        out_put_temp = 0;
+                        for (int day = 0; day < 30; day++) {//以30天为一组看误差
 
-                        out = outcome(year, month, day + 1, longitudes[j], latitudes[j], Zone(longitudes[j]), angles1[day], angles2[day]);
-                        out_put_temp += Math.abs(origin1_hour[day] * 60 + origin1_min[day] - (out[5] * 60 + out[6]))
-                        +Math.abs(origin2_hour[day] * 60 + origin2_min[day] - (out[7] * 60 + out[8]));//以分钟为单位累计30天的总差距(日出+日落)
+                            out = outcome(year, month, day + 1, longitudes[lo], latitudes[la], Zone(longitudes[lo]), angles1[day], angles2[day]);
+                            out_put_temp += Math.abs(origin1_hour[day] * 60 + origin1_min[day] - (out[5] * 60 + out[6]))
+                                    + Math.abs(origin2_hour[day] * 60 + origin2_min[day] - (out[7] * 60 + out[8]));//以分钟为单位累计30天的总差距(日出+日落)
 
-                        outdata_temp[day]=out;
+                            outdata_temp[day] = out;
+                        }
+                        if (out_put_temp < out_put) {
+                            output = "经度:" + (longitudes[lo]) + " 纬度:" + latitudes[la] + " " + year + "年" + month + "月 ";
+                            out_put = out_put_temp;//存储偏差
+                            outdata = outdata_temp.clone();//存储最小数据
+                        }
+
                     }
-                    if(out_put_temp<out_put){
-                        output = "经度:"+(longitudes[j])+" 纬度:"+latitudes[j]+" "+year+"年"+month+"月 第"+(j+1)+"组";
-                        out_put = out_put_temp;//存储偏差
-                        outdata = outdata_temp.clone();//存储最小数据
-                    }
-
                 }
             }
         }
